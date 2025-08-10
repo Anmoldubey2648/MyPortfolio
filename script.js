@@ -139,13 +139,15 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-// Mobile menu toggle
+// Mobile menu toggle with body scroll lock
 const hamburger = document.querySelector('.hamburger');
 const navLinks = document.querySelector('.nav-links');
+const body = document.body;
 
 hamburger.addEventListener('click', () => {
     navLinks.classList.toggle('active');
     hamburger.classList.toggle('active');
+    body.classList.toggle('menu-open');
 });
 
 // Close mobile menu when clicking outside
@@ -153,8 +155,41 @@ document.addEventListener('click', (e) => {
     if (!hamburger.contains(e.target) && !navLinks.contains(e.target)) {
         navLinks.classList.remove('active');
         hamburger.classList.remove('active');
+        body.classList.remove('menu-open');
     }
 });
+
+// Handle touch swipe gestures
+let touchStartX = 0;
+let touchEndX = 0;
+
+document.addEventListener('touchstart', e => {
+    touchStartX = e.changedTouches[0].screenX;
+});
+
+document.addEventListener('touchend', e => {
+    touchEndX = e.changedTouches[0].screenX;
+    handleSwipe();
+});
+
+function handleSwipe() {
+    const SWIPE_THRESHOLD = 50;
+    const swipeDistance = touchEndX - touchStartX;
+
+    if (Math.abs(swipeDistance) > SWIPE_THRESHOLD) {
+        if (swipeDistance > 0 && !navLinks.classList.contains('active')) {
+            // Swipe right to open
+            hamburger.classList.add('active');
+            navLinks.classList.add('active');
+            body.classList.add('menu-open');
+        } else if (swipeDistance < 0 && navLinks.classList.contains('active')) {
+            // Swipe left to close
+            hamburger.classList.remove('active');
+            navLinks.classList.remove('active');
+            body.classList.remove('menu-open');
+        }
+    }
+}
 
 // Scroll animations
 const observerOptions = {

@@ -1,8 +1,13 @@
+// Responsive particle density
+function getParticleCount() {
+    return window.innerWidth < 768 ? 50 : 100;
+}
+
 // Particles.js Configuration
 particlesJS('particles-js', {
     particles: {
         number: {
-            value: 100,
+            value: getParticleCount(),
             density: {
                 enable: true,
                 value_area: 800
